@@ -1,0 +1,234 @@
+\documentclass{article}[11pt]
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{tikz, enumitem}
+\usepackage{stmaryrd}
+\usepackage{centernot}
+
+\newtheorem{theorem}{Théorème}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{property}[theorem]{Propriété}
+\newtheorem{corollary}[theorem]{Corollaire}
+\newtheorem{lemma}[theorem]{Lemme}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Définition}
+\newtheorem{remarque}[theorem]{Remarque}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\norm}[1]{\lVert #1 \rVert}
+\title{Notes de Cours - Intégrale de Lebesgue}
+\author {Mohamed Aziz Gannar}
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Ensembles mesurables}
+\begin{definition}[Tribu ou $\sigma$-algebre]\label{tribu}
+  Soit $E$ un ensemble quelconque. On appelle tribu sur E tout ensemble $\eps$ de parties de E vérifiant :
+  \begin{itemize}
+    \item{$E \subset \mathcal{E}$}
+    \item Si $A \in \mathcal{E} \implies A^c \in \mathcal{E}$
+    \item{Si $(A_n)_{n \in \mathbb{N}} $ une suite d'éléments de $\mathcal{E} \implies \bigcup_{n\in \mathbb{N}}A_n \in \mathcal{E}$}
+  \end{itemize}
+\end{definition}
+
+\begin{remarque}
+  Si $\mathcal{E}$ est une tribu sur $E$ alors: 
+  \begin{itemize}
+  \item $\emptyset \in \mathcal{E}$ puisque $E \in \mathcal{E}$ et $E^c = \emptyset$
+  \item $ (A_n)_{n >= 0}$ est une suite d'éléments de $\mathcal{E}$ alors $\bigcap_{n>=0}A_n = (\bigcup_{n >=0}(A_n)^c)^c$ 
+  \item Si $A,...,A_n$ sont des éléments de $\mathcal{E}$ alors $\cup_{k=1}^{n}A_k \in \mathcal{E}$
+  \end{itemize}
+\end{remarque} 
+
+\begin{property}\label{intersection_de_tribu}
+  Soit $E$ un ensemble quelconque, $(\mathcal{E}_i)_{i \in I}$ une famille de tribus sur $E$.
+  L'ensemble des parties de $E$, 
+  \[\bigcap_{i \in I} \mathcal{E}_i\]
+  est une tribu sur $\mathcal{E}$.
+\end{property}
+\begin{proof} On montre chaque propriété de la définition d'une tribu.
+
+  \begin{itemize}
+    \item $\forall i \in I, E \in \mathcal{E}_i $ donc $ E \in \cap_{i \in I}\mathcal{E}_i$
+    \item Soit $:warningA \in \bigcap_{i \in I}\mathcal{E}_i $ alors $\forall i \in I, A \in \mathcal{E}_i,$ donc $\forall i \in I, A^c \in \mathcal{E}_i$.
+      Donc $A^c \in \bigcap_{i \in I} \mathcal{E}_i$
+    \item Soit $(A_n)_{n \in \mathbb{N}}$ une suite d'éléments de $\bigcap_{i \in I} \mathcal{E}_i$.\newline
+      Alors, pour tout $i \in I$, $(A_n)_{n\in\mathbb{N}}$ est une suite d'éléments de $\mathcal{E}_i$.\newline
+      Donc, $\bigcup_{k \in \mathbb{N}}(A_k) \in \mathcal{E}_i $ car $\mathcal{E}_i$ est une tribu. \newline
+      Donc, $\bigcup_{n \in \mathbb{N}}A_n \in \cap_{i \in I} \mathcal{E}_i$.
+  \end{itemize}
+  $\bigcup_{i \in I} \mathcal{E}_i$ est bien une tribu sur E.
+\end{proof}
+\begin{definition}[Tribu Engendrée]\label{tribu_engendree}
+  Soit $E$ un ensemble quelconque et $\mathcal{C}$ une classe de parties de $E$. L'ensemble $$\bigcap_{\substack{\mathcal{E} \text{tribu} \\ \mathcal{C} \subset E}}\mathcal{E}$$ est une tribu sur $E$.\newline
+  C'est la plus petite tribu sur $E$ contenant $\mathcal{C}$ et on la note $\sigma(\mathcal{C})$ et on l'appelle tribu engendrée par $\mathcal{C}$
+\end{definition}
+\begin{remarque}\label{def_borelien}
+  Si $E$ est un espace topologique dont on note $\mathcal{O}$ la classe des ouverts et $\mathcal{F}$ la classe des fermés, on a :
+  $$\mathcal{B}(E) = \sigma(\mathcal{F}) = \sigma(\mathcal{O})$$
+\end{remarque}
+\begin{proof}
+  Prouvons que $\sigma(\mathcal{O}) \subset \sigma(\mathcal{F})$
+  Il suffit de montrer que pour tout $ O \in \mathcal{O} \text{ on a } O \in \sigma(\mathcal{F})$
+  Car alors, $\sigma(\mathcal{F})$ est une tribu sur E et contient tout les ouverts de E. Donc elle contient la plus petite tribu content $\mathcal{O}$.\newline
+  Soit $O \in \mathcal{O}$, on a $O = (O^c)^c$. \newline
+  $O$ étant un ouvert de E, $O^c$ est un fermé de E. Donc $(O^c)^c$ est un ouvert de E.\newline
+  On a donc $O^c \in \sigma(\mathcal{F})$ donc par stabilité du passage au complémentaire, $ (O^c)^c \in \sigma(\mathcal{F})$.\newline
+  Ainsi, on a bien $\sigma(\mathcal{O}) \subset \sigma(\mathcal{F})$.
+  L'inclusion réciproque se montre de manière analogue.
+  
+\end{proof}
+\section{Espaces Mesurés}
+\begin{definition}[Mesure]\label{def_mesure}
+  Soit $(E,\mathcal{E})$ un espace mesurable. Une application $\mu$ définie sur $\mathcal{E}$ à valeurs dans $[0,+\infty]$ est appelée mesure lorsque: 
+ \begin{itemize}
+  \item $\mu(\emptyset) = 0$.
+  \item L'application $\mu$ est $\sigma$-additive, c'est à dire que , si $A_1,A_2,...$ est une famille dénombrable de parties de $E$ appartenant à $\mathcal{E}$ 2 à 2 disjointes, alors :
+    $$\mu(\bigcup_{k=1}^{\infty}A_k) = \sum_{k=1}^{\infty}\mu(A_k)$$
+ \end{itemize} 
+\end{definition}
+\begin{definition}[Espace Mesurés]\label{def_espace_mesuré}
+  Si $E$ est un ensemble, $\mathcal{E}$ est une tribu sur $E$ et $\mu$ est une mesure sur $(E,\mathcal{E})$, on dit que $(E,\mathcal{E},\mu)$ est une espace mesuré.
+\end{definition}
+\begin{proposition}
+  Il existe une unique mesure sure $(\mathbb{R}, \mathcal{B}(\mathbb(R)))$ traditionellement notée $\lambda$, tel que pour tout $a,b \in \mathbb{R}$
+  $$\lambda(]a,b[) = b -a $$
+  Cette mesure est la mesure de Lebesgue.
+\end{proposition}
+\begin{definition}[Types de Mesures]
+  Soit $(E,\mathcal{E},\mu)$ un espace mesuré.
+  \begin{itemize}
+    \item Si $\mu(E) < \infty$. On dit que $\mu$ est une mesure finie.
+    \item Si $\mu(E) = 1$. On dit que $\mu$ est une mesure de probabilité.
+    \item Si il existe une suite $(A_n)_{n \in \mathbb{N}}$ d'éléments de $\mathcal{E}$ tel que :
+      \begin{enumerate}
+        \item $\displaystyle\bigcup_{n \in \mathbb{N}}(A_n) = E$
+        \item $\forall n \geq 1\text{, } \mu(A_n) < \infty$
+      \end{enumerate}
+      On dit que $\mu$ est une mesure $\sigma$-finie.
+    \item On dit que $x \in E $ est un atome de $\mu$ si :
+      $$ \{x\} \in \mathcal{E} \text{ et } \mu(\{x\}) > 0$$
+    \item On dit que $\mu$ est diffuse quand $\mu$ n'a pas d'atome.
+  \end{itemize}
+\end{definition}
+\begin{property}
+  Soit $(E,\mathcal{E},\mu)$ un espace mesuré.
+  \begin{enumerate}
+    \item Pour tous $A,B \in \mathcal{E}$, tel que $A \cap B = \emptyset$
+      $$\mu (A \cup B) = \mu(A) + \mu(B)$$
+    \item Pour tous $A,B \in \mathcal{E}$, on a:
+      $$\mu(A) + \mu(B) = \mu(A\cup B) + \mu (A \cap B )\centernot \implies \mu(A\cup B) = \mu(A) + \mu(B) - \mu(A\cap B)$$
+    \item Pour tous $A,B \in \mathcal{E} \text{ tel que } A \subset B$, on a:
+      $$\mu(A) \leq \mu(B)$$
+  \end{enumerate}
+\end{property}
+\begin{proof}
+  On va démontrer les propriétés une à une:
+  \begin{enumerate}
+    \item Soient $A,B \in \mathcal{E} \text{ tel que } A \cap B = \emptyset$. La suite $(A_n)_{n \in \mathbb{N}}$ définie par: 
+      $$ A_1 = A, A_2 = B, A_n = \emptyset$$
+      est une suite d'éléments de $\mathcal{E}$ 2 à 2 disjointe. On a donc:
+      $$\mu(A \cup B) = \mu(\bigcup_{n \geq 1}A_n) = \sum_{ n \geq 1}\mu(A_n) = \mu(A) + \mu(B)$$
+    \item Soient $A,B \in \mathcal{E}$, on a:
+      \[ A = (A \cap B) \cup (A \cap B^c) \tag{réunion de partie disjointe de E}\]
+      \[ B = (B \cap A) \cup (B \cap A^c) \tag{réunion de partie disjointe de E}\]
+      \[ A \cup B = (A \cap B^c )\cup(A \cap B)\cup (A^c \cap B)\]
+      Donc,
+      \[ \mu(A) = \mu(A\cap B) + \mu(A \cap B^c )\]
+      \[ \mu(B) = \mu(B\cap A) + \mu(B \cap A^c )\]
+      \[ \mu(A \cup B) = \mu(A\cap B^c) + \mu(A \cap B ) + \mu(A^c \cap B)\]
+      Donc
+      \begin{equation}
+        \begin{split}
+          \mu(A) + \mu(B) &= 2 * \mu(A \cap B) + \mu(A \cap B^c) + \mu(A^c \cap B) \\ 
+                          &= \mu(A \cup B) + \mu(A \cap B)
+        \end{split}
+      \end{equation}
+    \item Soient $A,B \in \mathcal{E}$, tel que $ A \subset B$, on a, $B = (A \cap B) \cup (A^c \cap B)$ qui est une union disjointe.\\ 
+      Donc ,
+      \begin{equation}
+        \begin{split}
+          \mu(B) &= \mu( A \cap B) + \mu( A^c \cap B)\\ 
+                 &= \mu(A) + \mu(A^c \cap B) \geq \mu(A) 
+        \end{split}
+      \end{equation}
+      car $ \mu( A^c \cap B) \geq 0$.
+  \end{enumerate}
+\end{proof}
+\begin{proposition}[Propriété de continuité croissante des mesures positives]
+  Soient $(E, \mathcal{E}, \mu)$ un espace mesuré et $(A_n)_{n \geq 0}$ une suite croissante d'éléments de $\mathcal{E}$.
+  \[ \lim_{n\to\infty} \mu(A_n) = \sup_{n \geq 0} \mu(A_n) = \mu(\bigcup_{n \geq 0} A_n)\]
+\end{proposition}
+\begin{proof}
+  Soit $(A_n)_{n \geq 0}$ une suite d'éléments de $\mathcal{E}$.
+  D'après la propriété précédente : $(\mu(A_n))_{n \geq 0}$ est une suite croissante d'éléments de $\overline{\mathbb{R}}$ donc: 
+  \[ \lim_{n\to\infty}\mu(A_n) = \sup_{n \geq 0} \mu(A_n)\]
+  On pose $B_0 = A_0$ et pour tout $ n\geq 1 \text{, } B_n = A_n \backslash A_{n-1} = A_n \cap (A_{n-1})^c$
+  La suite $(B_n)_{n \geq 0}$ ayant les propriétés :
+  \begin{enumerate}
+    \item \begin{itemize}
+      \item les éléments de $(B_n)_{n \geq 0}$ sont 2 à 2 disjoints.
+      \item $\bigcup_{n \geq 0}B_n = \bigcup_{n \geq 0}A_n$
+    \end{itemize}
+  \item $\displaystyle \forall n \geq 0 \text{, } \bigcup_{l = 0}^{n} B_l = A_n \text{ et } \bigcup_{l=0}^{\infty}B_l = \bigcup_{l=0}^{\infty}A_l$
+  \end{enumerate}
+  On a donc,
+  \begin{equation}
+  \begin{split}
+    \mu(\bigcup_{l=0}^{\infty} A_l) &= \mu(\bigcup_{l=0}^{\infty}B_l)\\ 
+                  &= \sum_{l=0}^{\infty}\mu(B_l) \\ 
+                  &= \lim_{n \to \infty} \sum_{ l=0}^{\infty}B_l\\ 
+                  &= \lim_{n \to \infty} \mu(\bigcup_{l=0}^{n}B_l) \\ 
+                  &= \lim_{n \to\infty}\mu(A_n)
+  \end{split}
+  \end{equation}
+  Montrons les propriétés $(i)$ et $(ii)$ :  
+  \begin{enumerate}
+    \item Soient $m,n \in \mathbb{N}$  tel que $n \centernot = m$, par exemple $ m < n$:
+      \[ B_m \subset A_m \text{ et } B_m \subset (A_{n-1}^c) \subset (A_m)^c \]
+      Puisque $A_m \subset A_{n-1}$.
+      Donc $B_m \cap B_n = \emptyset$.
+    \item Pour tout $n \in \mathbb{N}, l\in\llbracket 0,n\rrbracket$, on a $ B_l \subset A_l \subset A_n$
+      Donc,  $$\sum_{l=0}^{\infty} B_l \subset A_n$$
+      Soit $n\in\mathbb{N}, x \in A_n$
+      On pose $n(x) = min\{k \in \mathbb{N}, x \in A_k\}$ et on a $x\in B_{n(x)}$ et $n(x) \leq n$ \text{ donc } $\displaystyle x\in \bigcup_{l=0}^{n}B_l \text{ donc } A_n \subset \bigcup_{l =0 }^{n}B_l$.\\ 
+      \underline{Finalement,} puisque $\displaystyle\forall n \geq 0 A_n \subset \bigcup_{l=0}^{n}B_l \subset \bigcup_{l=0}^{\infty} B_l$ \\ 
+      et $ B_n \subset A_n $
+      \[ \forall n \in \mathbb{N}, B_n \subset \bigcup_{l=0}^{\infty}A_l \text{ donc } \bigcup_{l=0}^{\infty}B_l \subset \bigcup_{l=0}^{\infty}A_l  \]
+  \end{enumerate}
+\end{proof}
+\begin{corollary}[Propriété de continuité décroissante des mesures positives]
+  Soit $(E,\mathcal{E},\mu)$ un espace mesuré et $(A_n)_{n \geq 0}$ une suite décroissante d'éléments de $\mathcal{E}$
+  tel que $\exists n_0 \in \mathbb{N} \text{ tel que } \mu(A_{n_0}) < \infty$.\\ 
+  Alors, 
+  \begin{equation}
+    \begin{split}
+      \lim_{n \to \infty} \mu(A_n) &= \inf_{n \geq 0 } \mu(A_n)  \\ 
+                                   &= \mu(\bigcap_{n \geq 0}(A_n))
+    \end{split}
+  \end{equation}
+\end{corollary}
+\begin{remarque}[Contre Exemple]
+  Soit $(\mathbb{R}, \mathcal{B}(\mathbb{R}), \lambda)$ un espace mesuré et on définit la suite décroissante $(A_n)_{n \in \mathbb{N}}$ par :
+  $$ \forall n \in \mathbb{N}, A_n = ]- \infty,-n[$$
+  On a donc :
+  $$ \bigcap_{n \in \mathbb{N}} A_n = \emptyset$$
+  et,
+  $$\forall n \in \mathbb{N}, \lambda(A_n) = + \infty$$
+  Or,
+  $$\mu(\bigcap_{ n \in \mathbb{N}}A_n) = 0$$
+  Donc on a : 
+  $$ + \infty = \lim_{n \to \infty}\lambda(A_n) \centernot = \lambda(\bigcap_{n \in \mathbb{N}}A_n) = 0$$
+\end{remarque}
+\begin{proof}
+  Soit $(A_n)_{n \geq 0}$ une suite décroissante d'éléments de E tel que $\exists n_0 \text{ tel que } \mu(A_{n_0}) < \infty$.  En posant pour tout $n \in \mathbb{N}, B_n = A_{n_0} \backslash A_n$
+  On se donne une suite croissante d'éléments de $\mathcal{E}$ car $\forall n \in \mathbb{N} $
+  \[ A_{n+1}  \subset A_n \implies (A_n)^c \subset (A_{n+1})^c \implies B_n = A_{n_0} \cap (A_n)^c \subset B_{n+1} \]
+  
+\end{proof}
+\end{document}
